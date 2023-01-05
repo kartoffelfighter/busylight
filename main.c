@@ -15,6 +15,7 @@
 #define LED_1_GREEN_GPIO 7
 #define LED_1_BLUE_GPIO 6
 
+#define INVERT_PWM 1    // to invert the PWM 
 #define PWM_COUNT_TOP 100
 
 //Function Prototypes
@@ -30,7 +31,14 @@ int main() {
     printf("DEBUG: HID Device initialized\n");
 
     //setup LED PWM
-    pwm_config cfg = pwm_get_default_config();
+    pwm_config c = {0, 0, 0};
+    pwm_config_set_phase_correct(&c, false);
+    pwm_config_set_clkdiv_int(&c, 1);
+    pwm_config_set_clkdiv_mode(&c, PWM_DIV_FREE_RUNNING);
+    pwm_config_set_output_polarity(&c, INVERT_PWM, INVERT_PWM);
+    pwm_config_set_wrap(&c, 0xffffu);
+    return c;
+
     pwm_config_set_wrap(&cfg, PWM_COUNT_TOP);
     pwm_init(pwm_gpio_to_slice_num(LED_1_RED_GPIO), &cfg, true);
     pwm_init(pwm_gpio_to_slice_num(LED_1_GREEN_GPIO), &cfg, true);
