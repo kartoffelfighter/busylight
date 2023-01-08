@@ -38,17 +38,15 @@ The device mimics a Plenom Kuando Busylight Omega model
 \
 I used https://github.com/mitrefccace/busylightapi as a reference to reverse engineer the protocol
 
+### Inverting PWM output
+To invert the PWM output (for leds with common anode), use the ````#define INVERT_PWM 1``` switch. 
+
 ### Compiling the code
-If you want to change the code and nteed to compile it, do the following:
-Assuming you have the raspberry pi pico c SDK installed(https://github.com/raspberrypi/pico-sdk) \
-The following (standard) commands will create "main.uf2" that can be copied onto the raspberry pi in bootsel mode:
-1. git clone git@github.com:buildcomics/Busylight.git
-2. cd Busylight
-3. mkdir build
-4. cd build
-5. cmake ..
-6. make
-7. Now press the button on your raspbery pi pico, connect it and copy the main.uf2 to the pico that should show up ass a mass storage device
+1. Install docker on your system
+2. Pull the latest pico-sdk 
+3. adapt the pico-sdk path in build_via_docker.sh
+4. call ```./build_via_docker.sh```
+5. Now press the button on your raspbery pi pico, connect it and copy the main.uf2 to the pico that should show up ass a mass storage device
 
 ## Testing
 Command to test HID descriptor of file: \

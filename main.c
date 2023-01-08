@@ -31,13 +31,12 @@ int main() {
     printf("DEBUG: HID Device initialized\n");
 
     //setup LED PWM
-    pwm_config c = {0, 0, 0};
-    pwm_config_set_phase_correct(&c, false);
-    pwm_config_set_clkdiv_int(&c, 1);
-    pwm_config_set_clkdiv_mode(&c, PWM_DIV_FREE_RUNNING);
-    pwm_config_set_output_polarity(&c, INVERT_PWM, INVERT_PWM);
-    pwm_config_set_wrap(&c, 0xffffu);
-    return c;
+    pwm_config cfg = {0, 0, 0};
+    pwm_config_set_phase_correct(&cfg, false);
+    pwm_config_set_clkdiv_int(&cfg, 1);
+    pwm_config_set_clkdiv_mode(&cfg, PWM_DIV_FREE_RUNNING);
+    pwm_config_set_output_polarity(&cfg, INVERT_PWM, INVERT_PWM);
+    pwm_config_set_wrap(&cfg, 0xffffu);
 
     pwm_config_set_wrap(&cfg, PWM_COUNT_TOP);
     pwm_init(pwm_gpio_to_slice_num(LED_1_RED_GPIO), &cfg, true);
@@ -108,7 +107,9 @@ void hid_task(void) {
 
 }
 // Invoked when received control request with VENDOR TYPE
-bool tud_vendor_control_request_cb(uint8_t rhport, tusb_control_request_t const * request) {
+//bool tud_vendor_control_request_cb(uint8_t rhport, tusb_control_request_t const * request) 
+bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const* request)
+{
     printf("DEBUG: tud_vendor_control_request_cb triggered\n");
     (void) rhport;
     (void) request;
@@ -125,13 +126,16 @@ bool tud_vendor_control_complete_cb(uint8_t rhport, tusb_control_request_t const
     return 0;
 }
 
+
+
 //attempt to use:
 // Invoked when received GET_REPORT control request
 // Application must fill buffer report's content and return its length.
 // Return zero will cause the stack to STALL request
-uint16_t tud_hid_get_report_cb(uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
+uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
     // TODO not Implemented
     printf("DEBUG: tud_hid_get_report_cb triggered\n");
+    (void) instance;
     (void) report_id;
     (void) report_type;
     (void) buffer;
@@ -141,7 +145,7 @@ uint16_t tud_hid_get_report_cb(uint8_t report_id, hid_report_type_t report_type,
 }
 // Invoked when received SET_REPORT control request or
 // received data on OUT endpoint ( Report ID = 0, Type = 0 )
-void tud_hid_set_report_cb(uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
+void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
     printf("DEBUG: tud_hid_set_report_cb triggered\n");
     printf("DEBUG: report_id: %X\n", report_id);
     printf("DEBUG: report_type: %X\n", report_type);
